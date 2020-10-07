@@ -399,8 +399,8 @@ public abstract class ConvexSolver extends GenericSolver implements UpdatableSol
                 for (int i = 0; i < numbUpVar; i++) {
                     final SparseArray<Double> rowAI = mtrxAI.addRow();
                     final Variable tmpVariable = tmpUpVar.get(i);
-                    rowAI.set(sourceModel.indexOfFreeVariable(tmpVariable), tmpVariable.getAdjustmentFactor());
-                    mtrxBI.set(numbUpExpr + i, 0, tmpVariable.getAdjustedUpperLimit());
+                    rowAI.set(sourceModel.indexOfFreeVariable(tmpVariable), ONE);
+                    mtrxBI.set(numbUpExpr + i, 0, tmpVariable.getUnadjustedUpperLimit());
                 }
             }
 
@@ -422,8 +422,8 @@ public abstract class ConvexSolver extends GenericSolver implements UpdatableSol
                 for (int i = 0; i < numbLoVar; i++) {
                     final SparseArray<Double> rowAI = mtrxAI.addRow();
                     final Variable tmpVariable = tmpLoVar.get(i);
-                    rowAI.set(sourceModel.indexOfFreeVariable(tmpVariable), -tmpVariable.getAdjustmentFactor());
-                    mtrxBI.set(numbUpExpr + numbUpVar + numbLoExpr + i, 0, -tmpVariable.getAdjustedLowerLimit());
+                    rowAI.set(sourceModel.indexOfFreeVariable(tmpVariable), NEG);
+                    mtrxBI.set(numbUpExpr + numbUpVar + numbLoExpr + i, 0, -tmpVariable.getUnadjustedLowerLimit());
                 }
             }
 

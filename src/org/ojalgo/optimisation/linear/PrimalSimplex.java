@@ -321,20 +321,20 @@ final class PrimalSimplex extends SimplexSolver {
         for (int c = 0; c < tmpVarsPosLoLength; c++) {
             Variable tmpVar = tmpVarsPosLo.get(c);
 
-            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, tmpVar.getAdjustedLowerLimit());
+            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, tmpVar.getUnadjustedLowerLimit());
 
             int tmpKey = model.indexOf(tmpVar);
 
-            double tmpFactor = tmpVar.getAdjustmentFactor();
+            // double tmpFactor = tmpVar.getAdjustmentFactor();
 
             int tmpPosInd = model.indexOfPositiveVariable(tmpKey);
             if (tmpPosInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, ONE);
             }
 
             int tmpNegInd = model.indexOfNegativeVariable(tmpKey);
             if (tmpNegInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, -tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, NEG);
             }
 
             retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpCurrentSlackVarIndex++, NEG);
@@ -345,20 +345,20 @@ final class PrimalSimplex extends SimplexSolver {
         for (int c = 0; c < tmpVarsPosUpLength; c++) {
             Variable tmpVar = tmpVarsPosUp.get(c);
 
-            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, tmpVar.getAdjustedUpperLimit());
+            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, tmpVar.getUnadjustedUpperLimit());
 
             int tmpKey = model.indexOf(tmpVar);
 
-            double tmpFactor = tmpVar.getAdjustmentFactor();
+            // double tmpFactor = tmpVar.getAdjustmentFactor();
 
             int tmpPosInd = model.indexOfPositiveVariable(tmpKey);
             if (tmpPosInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, ONE);
             }
 
             int tmpNegInd = model.indexOfNegativeVariable(tmpKey);
             if (tmpNegInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, -tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, NEG);
             }
 
             retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpCurrentSlackVarIndex++, ONE);
@@ -369,20 +369,20 @@ final class PrimalSimplex extends SimplexSolver {
         for (int c = 0; c < tmpVarsNegLoLength; c++) {
             Variable tmpVar = tmpVarsNegLo.get(c);
 
-            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, -tmpVar.getAdjustedLowerLimit());
+            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, -tmpVar.getUnadjustedLowerLimit());
 
             int tmpKey = model.indexOf(tmpVar);
 
-            double tmpFactor = tmpVar.getAdjustmentFactor();
+            // double tmpFactor = tmpVar.getAdjustmentFactor();
 
             int tmpPosInd = model.indexOfPositiveVariable(tmpKey);
             if (tmpPosInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, -tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, NEG);
             }
 
             int tmpNegInd = model.indexOfNegativeVariable(tmpKey);
             if (tmpNegInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, ONE);
             }
 
             retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpCurrentSlackVarIndex++, ONE);
@@ -393,20 +393,20 @@ final class PrimalSimplex extends SimplexSolver {
         for (int c = 0; c < tmpVarsNegUpLength; c++) {
             Variable tmpVar = tmpVarsNegUp.get(c);
 
-            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, -tmpVar.getAdjustedUpperLimit());
+            retVal.constraintsRHS().set(tmpConstrBaseIndex + c, -tmpVar.getUnadjustedUpperLimit());
 
             int tmpKey = model.indexOf(tmpVar);
 
-            double tmpFactor = tmpVar.getAdjustmentFactor();
+            //  double tmpFactor = tmpVar.getAdjustmentFactor();
 
             int tmpPosInd = model.indexOfPositiveVariable(tmpKey);
             if (tmpPosInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, -tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpPosVarsBaseIndex + tmpPosInd, NEG);
             }
 
             int tmpNegInd = model.indexOfNegativeVariable(tmpKey);
             if (tmpNegInd >= 0) {
-                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, tmpFactor);
+                retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpNegVarsBaseIndex + tmpNegInd, ONE);
             }
 
             retVal.constraintsBody().set(tmpConstrBaseIndex + c, tmpCurrentSlackVarIndex++, NEG);

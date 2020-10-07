@@ -52,6 +52,7 @@ public final class Variable extends ModelEntity<Variable> {
 
     private IntIndex myIndex = null;
     private boolean myInteger = false;
+    private transient ExpressionsBasedModel myModel = null;
     private transient boolean myUnbounded = false;
     private BigDecimal myValue = null;
 
@@ -66,6 +67,8 @@ public final class Variable extends ModelEntity<Variable> {
         myIndex = null;
         myInteger = variableToCopy.isInteger();
         myValue = variableToCopy.getValue();
+
+        myModel = null;
     }
 
     /**
@@ -272,7 +275,7 @@ public final class Variable extends ModelEntity<Variable> {
     @Override
     int deriveAdjustmentExponent() {
 
-        if (!this.isConstraint()) {
+        if (myInteger || !this.isConstraint()) {
             return 0;
         }
 
@@ -281,29 +284,38 @@ public final class Variable extends ModelEntity<Variable> {
         AggregatorFunction<BigDecimal> largest = aggregators.largest();
         AggregatorFunction<BigDecimal> smallest = aggregators.smallest();
 
-        BigDecimal lowerLimit = this.getLowerLimit();
-        if (lowerLimit != null) {
-            if (lowerLimit.signum() == 0) {
-                largest.invoke(ONE);
-                smallest.invoke(ONE);
-            } else {
-                largest.invoke(lowerLimit);
-                smallest.invoke(lowerLimit);
-            }
-        }
+        if (myModel != null) {
 
-        BigDecimal upperLimit = this.getUpperLimit();
-        if (upperLimit != null) {
-            if (upperLimit.signum() == 0) {
-                largest.invoke(ONE);
-                smallest.invoke(ONE);
-            } else {
-                largest.invoke(upperLimit);
-                smallest.invoke(upperLimit);
-            }
-        }
+            myModel.visitColumn(this, largest, smallest);
 
-        return ModelEntity.deriveAdjustmentExponent(largest, smallest, 12);
+            return -ModelEntity.deriveAdjustmentExponent(largest, smallest, 12);
+
+        } else {
+
+            BigDecimal lowerLimit = this.getLowerLimit();
+            if (lowerLimit != null) {
+                if (lowerLimit.signum() == 0) {
+                    largest.invoke(ONE);
+                    smallest.invoke(ONE);
+                } else {
+                    largest.invoke(lowerLimit);
+                    smallest.invoke(lowerLimit);
+                }
+            }
+
+            BigDecimal upperLimit = this.getUpperLimit();
+            if (upperLimit != null) {
+                if (upperLimit.signum() == 0) {
+                    largest.invoke(ONE);
+                    smallest.invoke(ONE);
+                } else {
+                    largest.invoke(upperLimit);
+                    smallest.invoke(upperLimit);
+                }
+            }
+
+            return ModelEntity.deriveAdjustmentExponent(largest, smallest, 12);
+        }
     }
 
     IntIndex getIndex() {
@@ -322,11 +334,16 @@ public final class Variable extends ModelEntity<Variable> {
         this.level(value).setValue(value);
     }
 
-    void setIndex(final IntIndex index) {
+    void setIndex(final ExpressionsBasedModel model, final IntIndex index) {
+        Objects.requireNonNull(model, "The model cannot be null!");
         Objects.requireNonNull(index, "The index cannot be null!");
+        if ((myModel != null) && !myModel.equals(model)) {
+            throw new IllegalStateException("Cannot change a variable's model!");
+        }
         if ((myIndex != null) && (myIndex.index != index.index)) {
             throw new IllegalStateException("Cannot change a variable's index, or add a variable to more than one model!");
         }
+        myModel = model;
         myIndex = index;
     }
 
